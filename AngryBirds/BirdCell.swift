@@ -14,8 +14,8 @@ class BirdCell: UICollectionViewCell {
         didSet {
             if let imageURL = URL(string: bird!.imageUrl) {
                 DispatchQueue.global(qos: .userInitiated).async {
-                    
                     let imageData: NSData = NSData(contentsOf: imageURL)!
+
                     DispatchQueue.main.async {
                         let image = UIImage(data: imageData as Data)
                         self.birdImageView.image = image
@@ -26,5 +26,9 @@ class BirdCell: UICollectionViewCell {
     }
     
     @IBOutlet weak var birdImageView: UIImageView!
+    
+    override func awakeFromNib() {
+        layer.cornerRadius = 88
+    }
     
 }

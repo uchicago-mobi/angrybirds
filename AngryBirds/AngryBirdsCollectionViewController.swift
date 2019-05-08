@@ -25,7 +25,6 @@ class AngryBirdsCollectionViewController: UIViewController {
         self.birdCollectionView.delegate = self
         self.birdCollectionView.dataSource = self
         
-        self.birdFlowLayout.scrollDirection = .horizontal
         self.birdFlowLayout.minimumLineSpacing = 0
         self.birdFlowLayout.minimumInteritemSpacing = 0
         self.birdFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 0)
@@ -75,7 +74,7 @@ extension AngryBirdsCollectionViewController: UICollectionViewDelegateFlowLayout
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
 
-        return CGSize(width: 220, height: 220)
+        return CGSize(width: 180, height: 180)
     }
 
 
