@@ -10,8 +10,21 @@ import Foundation
 import UIKit
 
 class BirdCell: UICollectionViewCell {
+    var bird: Bird? {
+        didSet {
+            if let imageURL = URL(string: bird!.imageUrl) {
+                DispatchQueue.global(qos: .userInitiated).async {
+                    
+                    let imageData: NSData = NSData(contentsOf: imageURL)!
+                    DispatchQueue.main.async {
+                        let image = UIImage(data: imageData as Data)
+                        self.birdImageView.image = image
+                    }
+                }
+            }
+        }
+    }
+    
     @IBOutlet weak var birdImageView: UIImageView!
     
-    override func awakeFromNib() {
-    }    
 }

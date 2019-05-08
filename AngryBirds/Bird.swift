@@ -8,7 +8,11 @@
 
 import Foundation
 
-struct Bird {
+struct Bird: Codable {
     let name: String?
-    let imagePath: String
+    let imageUrl: String
+}
+
+struct BirdResult: Codable {
+    let birds: [Bird]
 }

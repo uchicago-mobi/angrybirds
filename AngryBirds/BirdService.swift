@@ -9,28 +9,35 @@
 import Foundation
 
 class BirdService {
-    var birds: [Bird]
-    
-    init() {
-        birds = [
-            Bird(name: "European Sparrow", imagePath: "alsoEuropeanSparrow"),
-            Bird(name: "Amazon", imagePath: "amazon"),
-            Bird(name: "American Sparrow", imagePath: "americanSparrow"),
-            Bird(name: "Bald Eagle", imagePath: "baldEagle"),
-            Bird(name: "Bluebird", imagePath: "bluebird"),
-            Bird(name: "Black Necked Bluebird", imagePath: "blackNeckedBluebird"),
-            Bird(name: "Cardinal", imagePath: "cardinal"),
-            Bird(name: "European Sparrow", imagePath: "europeanSparrow"),
-            Bird(name: "Hawk", imagePath: "hawk"),
-            Bird(name: "Hummingbird", imagePath: "hummingbird"),
-            Bird(name: "Parrots", imagePath: "parrots"),
-            Bird(name: "Finch", imagePath: "someKindOfLargeFinch"),
-            Bird(name: "Willie Wagtail", imagePath: "willieWagtail"),
-            Bird(name: "Oriole", imagePath: "oriole")
-        ]
+    var dataTask: URLSessionDataTask?
+        
+    private let urlString = "http://www.mocky.io/v2/5cd2449d3100004714339680"
+        
+    func getBirds(completion: @escaping ([Bird]?, Error?) -> ()) {
+            guard let url = URL(string: self.urlString) else {
+                    print("invalid url: \(self.urlString)")
+                    return
+            }
+                
+            let request = URLRequest(url: url)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                    
+                guard let data = data, let response = response as? HTTPURLResponse, error == nil else {
+                    DispatchQueue.main.async { completion(nil, error) }
+                    return
+                }
+                    
+                print("Status code: \(response.statusCode)")
+                print(String(data: data, encoding: .utf8) ?? "unable to print data")
+                    
+                do {
+                    let decoder = JSONDecoder()
+                    let birdResult = try decoder.decode(BirdResult.self, from: data)
+                    DispatchQueue.main.async { completion(birdResult.birds, nil) }
+                } catch (let error) {
+                    DispatchQueue.main.async { completion(nil, error) }
+                }
+            }
+            task.resume()
+        }
     }
-    
-    func getBirds() -> [Bird] {
-        return birds
-    }
-}

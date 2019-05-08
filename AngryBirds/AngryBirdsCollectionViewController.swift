@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AngryBirdsCollectionViewController: UIViewController, UICollectionViewDelegate {
+class AngryBirdsCollectionViewController: UIViewController {
     @IBOutlet weak var birdCollectionView: UICollectionView!
     @IBOutlet weak var birdFlowLayout: UICollectionViewFlowLayout!
     
@@ -32,8 +32,14 @@ class AngryBirdsCollectionViewController: UIViewController, UICollectionViewDele
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        self.birds = self.birdService.getBirds()
-        self.birdCollectionView.reloadData()
+        self.birdService.getBirds(completion: { birds, error in
+            guard let birds = birds, error == nil else {
+                print(error ?? "unknown error")
+                return
+            }
+            self.birds = birds
+            self.birdCollectionView.reloadData()
+        })
     }
     
 }
@@ -58,7 +64,7 @@ extension AngryBirdsCollectionViewController: UICollectionViewDataSource {
             .dequeueReusableCell(withReuseIdentifier: reuseIdentifier, for: indexPath) as! BirdCell
         cell.backgroundColor = .black
         
-        cell.birdImageView.image = UIImage(named: bird.imagePath)
+        cell.bird = bird
         return cell
     }
 }
@@ -68,11 +74,8 @@ extension AngryBirdsCollectionViewController: UICollectionViewDelegateFlowLayout
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let paddingSpace = self.birdFlowLayout.sectionInset.left * (2 + 1)
-        let availableWidth = view.frame.width - paddingSpace
-        let widthPerItem = availableWidth / 2
 
-        return CGSize(width: widthPerItem, height: widthPerItem)
+        return CGSize(width: 220, height: 220)
     }
 
 
